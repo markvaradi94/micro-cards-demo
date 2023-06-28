@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  cards:
+    container_name: micro-cards
+    image: markvaradi94/micro-cards:latest
+    ports:
+      - "9093:9093"
+    environment:
+      - DATABASE_HOST=cards-db
+      - DATABASE_PORT=3306
+      - DATABASE_USER=cards
+      - DATABASE_PASSWORD=password
+    depends_on:
+      - cards-db
+
+  cards-db:
+    container_name: cards-db
+    image: mysql:8-oracle
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: cards
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: cards
+    ports:
+      - "3308:3306"
+    volumes:
+      - cards-data:/var/lib/mysql
+
+volumes:
+  cards-data:
