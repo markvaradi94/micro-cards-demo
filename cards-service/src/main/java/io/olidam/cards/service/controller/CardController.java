@@ -1,10 +1,13 @@
 package io.olidam.cards.service.controller;
 
+import io.olidam.cards.service.config.CardsConfig;
+import io.olidam.cards.service.config.Properties;
 import io.olidam.cards.service.model.dto.CardDto;
 import io.olidam.cards.service.model.dto.CustomerDto;
 import io.olidam.cards.service.model.mapper.CardMapper;
 import io.olidam.cards.service.service.CardService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 public class CardController {
     private final CardService service;
     private final CardMapper mapper;
+    private final CardsConfig config;
 
     @GetMapping
     List<CardDto> getAll() {
@@ -45,5 +49,16 @@ public class CardController {
         return service.delete(id)
                 .map(mapper::toApi)
                 .orElseThrow(() -> new RuntimeException("Could not find card with id %s".formatted(id)));
+    }
+
+    @SneakyThrows
+    @GetMapping("properties")
+    Properties getPropertyDetails() {
+        return Properties.builder()
+                .msg(config.getMsg())
+                .buildVersion(config.getBuildVersion())
+                .mailDetails(config.getMailDetails())
+                .activeBranches(config.getActiveBranches())
+                .build();
     }
 }
